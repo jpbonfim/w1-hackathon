@@ -8,8 +8,11 @@ db_password = os.getenv("DB_PASSWORD")
 
 def get_config(key: str):
     try:
-        return os.getenv(key)
-    except Exception as error:
+        value = os.getenv(key)
+        if value is None:
+            raise Exception()
+        return value
+    except Exception:
         logging.error(f"Error getting environment variable: {key}")
         raise EnvironmentException()
 

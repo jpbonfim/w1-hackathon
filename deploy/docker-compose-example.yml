@@ -1,0 +1,30 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: USER
+      MONGO_INITDB_ROOT_PASSWORD: PASSWORD
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+
+  w1-backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: w1-backend
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_CONNECTION_URL: CONNECTION_URL
+      MONGO_DATABASE: "hackathon-w1"
+      MONGO_COLLECTION_USERS: "users"
+      W1_BACKEND_PORT: "9000"
+
+volumes:
+  mongodb_data:

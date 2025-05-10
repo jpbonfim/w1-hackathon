@@ -34,11 +34,22 @@ class UserRepository(MongoDBInfrastructure):
         return User(**user)
 
     @classmethod
-    async def update_user(cls, user_id: str, user_data: dict):
+    async def create_user(cls, user: User):
+        try:
+            collection = cls._get_collection()
+            user_document = user.model_dump()
+            await collection.insert_one(user_document)
+        except Exception as error:
+            message = f"Failed to create user CPF: {user.cpf}. Error: {error}"
+            logging.error(message)
+            raise FailToPersist(message)
+
+    @classmethod
+    async def update_user(cls, user_id: str, update_data: dict):
         user_filter = {"user_id": user_id}
         try:
             collection = cls._get_collection()
-            update = await collection.update_one(user_filter, {"$set": user_data})
+            update = await collection.update_one(user_filter, {"$set": update_data})
         except Exception as error:
             message = f"Failed to update user {user_id}. Error: {error}"
             logging.error(message)
