@@ -1,4 +1,4 @@
-motor==3.7.0
 pydantic==2.11.4
 uvicorn==0.34.2
 fastapi[standard]==0.115.12
+asyncpg==0.30.0

@@ -1,15 +1,16 @@
 services:
-  mongo:
-    image: mongo
-    container_name: mongodb
+  postgres:
+    image: postgres:16
+    container_name: postgres
     ports:
-      - "27017:27017"
+      - "5432:5432"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: USER
-      MONGO_INITDB_ROOT_PASSWORD: PASSWORD
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hackathon-w1
     volumes:
-      - mongodb_data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
 
   w1-backend:
     build:
@@ -19,12 +20,10 @@ services:
     ports:
       - "9000:9000"
     depends_on:
-      - mongo
+      - postgres
     environment:
-      MONGO_CONNECTION_URL: CONNECTION_URL
-      MONGO_DATABASE: "hackathon-w1"
-      MONGO_COLLECTION_USERS: "users"
+      POSTGRES_CONNECTION_URL: "postgresql://username:password@postgres:5432/hackathon-w1"
       W1_BACKEND_PORT: "9000"
 
 volumes:
-  mongodb_data:
+  postgres_data:
