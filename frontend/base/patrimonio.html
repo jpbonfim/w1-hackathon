@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Patrimônio</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="logo">w1</div>
+      <nav class="menu">
+        <a href="#sobre">Sobre</a>
+        <a href="#suporte">Suporte</a>
+        <a href="/perfil.html" class="btn-entrar">Perfil</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <h2 class="title">Resumo da Sua Conta</h2>
+
+    <section class="dashboard-cards">
+      <div class="chart-block">
+        <h4>Composição</h4>
+        <canvas id="pieChart"></canvas>
+        <ul class="legend">
+          <li><span class="dot red"></span> Renda Fixa</li>
+          <li><span class="dot yellow"></span> Bancos Brasileiros</li>
+          <li><span class="dot black"></span> Valor em Caixa</li>
+        </ul>
+      </div>
+
+      <div class="chart-block">
+        <h4>Patrimônio da Holding</h4>
+        <canvas id="barChart"></canvas>
+        <ul class="legend">
+          <li><span class="dot green"></span> Imóveis</li>
+          <li><span class="dot blue"></span> Ações</li>
+          <li><span class="dot purple"></span> Fundos</li>
+          <li><span class="dot orange"></span> Outros</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="dashboard-flex">
+      <div class="left-box">
+        <h4>Passivos das Holdings</h4>
+        <ul class="passivos-list">
+          <li>Holding A — <span class="red">R$ 200.000</span></li>
+          <li>Holding B — <span class="yellow">R$ 150.000</span></li>
+          <li>Holding C — <span class="green">R$ 80.000</span></li>
+        </ul>
+      </div>
+      <div class="right-box">
+        <h4>Rendimento Semanal</h4>
+        <canvas id="lineChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-left">
+        <h4>Conheça a W1</h4>
+        <ul>
+          <li><a href="#">W1 Consciência</a></li>
+          <li><a href="#">W1 Capital</a></li>
+          <li><a href="#">W1 Tecnologia</a></li>
+          <li><a href="#">W1 Consultoria Patrimonial</a></li>
+        </ul>
+      </div>
+      <div class="footer-right">
+        <h4>Contato:</h4>
+        <p>Endereço: R. Funchal 418 - Conjunto 1701 - Vila Olímpia, São Paulo - SP, 04551-060</p>
+        <p>Telefone: <a href="tel:+551130013007">(11) 3001-3007</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Gráfico de Pizza
+    new Chart(document.getElementById('pieChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Renda Fixa', 'Bancos Brasileiros', 'Valor em Caixa'],
+        datasets: [{
+          data: [24, 25, 51],
+          backgroundColor: ['#e63946', '#ffcd56', '#000000']
+        }]
+      }
+    });
+
+    // Gráfico de Barras
+    new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Imóveis', 'Ações', 'Fundos', 'Outros'],
+        datasets: [{
+          label: 'Valor (R$)',
+          data: [300, 150, 100, 50],
+          backgroundColor: ['#2a9d8f', '#0077b6', '#7209b7', '#f8961e']
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Gráfico de Linha
+    new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+        datasets: [{
+          label: 'Rendimento (R$)',
+          data: [200, 250, 180, 300, 350, 310, 400],
+          borderColor: '#264653',
+          tension: 0.4,
+          fill: true,
+          backgroundColor: 'rgba(38,70,83,0.1)'
+        }]
+      },
+      options: {
+        responsive: true
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil - W1</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="logo">w1</div>
+      <nav class="menu">
+        <a href="#sobre">Sobre</a>
+        <a href="#suporte">Suporte</a>
+        <a href="#" class="btn-entrar">Perfil</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="perfil-container">
+    <button class="back-button">←</button>
+
+    <section class="perfil-card">
+      <div class="perfil-left">
+        <div class="avatar-wrapper">
+          <img src="img/avatar-placeholder.svg" alt="Avatar" class="avatar-img" />
+          <button class="edit-photo-btn">✎ Editar Foto</button>
+        </div>
+        <p class="saudacao">Olá, <strong>%Nome%</strong></p>
+      </div>
+
+      <div class="perfil-right">
+        <h2>Configurações</h2>
+        <form class="perfil-form">
+          <label>Nome</label>
+          <input type="text" placeholder="Seu nome" />
+
+          <label>Email</label>
+          <input type="email" placeholder="email@exemplo.com" />
+
+          <label>Telefone</label>
+          <input type="tel" placeholder="(11) 99999-9999" />
+
+          <label>Alterar Senha</label>
+          <input type="password" placeholder="Senha Atual" />
+          <input type="password" placeholder="Nova Senha" />
+
+          <div class="form-buttons">
+            <button type="submit" class="btn-confirmar">Confirmar</button>
+            <button type="button" class="btn-desconectar">Desconectar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-left">
+        <h4>Conheça a W1</h4>
+        <ul>
+          <li><a href="#">W1 Consciência</a></li>
+          <li><a href="#">W1 Capital</a></li>
+          <li><a href="#">W1 Tecnologia</a></li>
+          <li><a href="#">W1 Consultoria Patrimonial</a></li>
+        </ul>
+      </div>
+      <div class="footer-right">
+        <h4>Contato:</h4>
+        <p>Endereço: R. Funchal, 418 – Conjunto 1701 – Vila Olímpia, São Paulo - SP, 04551-060</p>
+        <p>Telefone: <a href="tel:+551130013007">(11) 3001-3007</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

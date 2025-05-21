@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - W1 Holdings</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="logo">w1</div>
+      <nav class="menu">
+        <a href="#sobre">Sobre</a>
+        <a href="#suporte">Suporte</a>
+        <a href="/login.html" class="btn-entrar">Entrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="login-page">
+    <div class="login-left">
+      <h2>Seu próximo passo na gestão de patrimônio começa aqui.</h2>
+      <form action="/login" method="POST">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required>
+
+        <div class="form-links">
+          <a href="#">Esqueceu sua senha?</a>
+        </div>
+
+        <button type="submit" class="btn-login">Entrar</button>
+
+        <button type="button" class="btn-google">
+          <img src="assets/imagens/google-icon.png" alt="Google" />
+          Continuar com o Google
+        </button>
+
+        <p class="register-text">Ainda não tem uma conta? <a href="#">Registre-se</a></p>
+      </form>
+    </div>
+
+    <div class="login-right">
+      <div class="overlay-text">
+        <h3>Soluções digitais que impulsionam o futuro da sua empresa.</h3>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-left">
+        <h4>Conheça a W1</h4>
+        <ul>
+          <li><a href="#">W1 Consciência</a></li>
+          <li><a href="#">W1 Capital</a></li>
+          <li><a href="#">W1 Tecnologia</a></li>
+          <li><a href="#">W1 Consultoria Patrimonial</a></li>
+        </ul>
+      </div>
+      <div class="footer-right">
+        <h4>Contato:</h4>
+        <p>Endereço: R. Funchal 418 - Conjunto 1701 - Vila Olímpia, São Paulo - SP, 04551-060</p>
+        <p>Telefone: <a href="tel:+551130013007">(11) 3001-3007</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
