@@ -4,7 +4,8 @@ from typing import Any, List, Optional, Dict
 import asyncpg
 from asyncpg.pool import Pool
 
-from src.domain.exceptions.infrastructure import ConnectionException, QueryExecutionException, CommandExecutionException
+from src.domain.exceptions.infrastructure import ConnectionException, QueryExecutionException, \
+    CommandExecutionException, RecordAlreadyExistsException
 from src.infrastructures import get_config
 
 
@@ -59,6 +60,9 @@ class PostgreSQLInfrastructure:
                 else:
                     await connection.execute(command)
                 return "SUCCESS"
+            except asyncpg.exceptions.UniqueViolationError:
+                logging.error("Unique constraint violation")
+                raise RecordAlreadyExistsException()
             except Exception as error:
                 logging.error(f"Failed to execute command: {error}")
                 raise CommandExecutionException()

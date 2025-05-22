@@ -1,11 +1,15 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
+from fastapi import Header
 
 from src.domain.contract_models.user import (
     CreateUserResponse,
     CreateUserRequest,
     GetUserResponse,
-    GetUserRequest,
+    GetUserRequest, MeResponse,
 )
+from src.services.auth import AuthService
 from src.services.user import UserService
 
 
@@ -21,7 +25,7 @@ class UserRouter:
         "/create",
         response_model=CreateUserResponse,
     )
-    async def create_user(request: CreateUserRequest = Depends(CreateUserRequest)):
+    async def create_user(request: CreateUserRequest):
         user_data = request.model_dump()
         user_id = await UserService.create_user(user_data=user_data)
         response = CreateUserResponse(success=True, user_id=user_id)
@@ -29,10 +33,24 @@ class UserRouter:
 
     @staticmethod
     @__user_router.get(
-        "/",
+        "/get",
         response_model=GetUserResponse,
     )
     async def get_user(request: GetUserRequest = Depends(GetUserRequest)):
         user = await UserService.get_user(user_id=request.user_id)
         response = GetUserResponse(success=True, user=user)
+        return response
+
+    @staticmethod
+    @__user_router.get(
+        "/me",
+        response_model=MeResponse
+    )
+    async def get_current_user(auth: Annotated[str, Header()]):
+        token_data = AuthService.validate_token(auth)
+        user = await UserService.get_user(user_id=token_data.user_id)
+        response = MeResponse(
+            success=True,
+            user_data=user
+        )
         return response

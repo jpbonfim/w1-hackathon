@@ -12,5 +12,8 @@ class QueryExecutionException(Exception):
 class CommandExecutionException(Exception):
     pass
 
+class RecordAlreadyExistsException(Exception):
+    pass
+
 class DatabaseStructureException(Exception):
     pass

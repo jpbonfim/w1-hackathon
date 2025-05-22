@@ -1,6 +1,7 @@
 import logging
 
 from src.domain.entities.user import User
+from src.domain.exceptions.infrastructure import RecordAlreadyExistsException
 from src.domain.exceptions.repository import DataNotFound, FailToPersist
 from src.infrastructures.postgresql import PostgreSQLInfrastructure
 
@@ -39,6 +40,10 @@ class UserRepository(PostgreSQLInfrastructure):
 
             command = f"INSERT INTO users ({fields}) VALUES ({placeholders})"
             await cls.execute_command(command, values)
+        except RecordAlreadyExistsException:
+            message = f"User with email {user.email} already exists."
+            logging.error(message)
+            raise
         except Exception as error:
             message = f"Failed to create user email: {user.email}. Error: {error}"
             logging.error(message)
@@ -60,6 +65,30 @@ class UserRepository(PostgreSQLInfrastructure):
                 raise FailToPersist(message)
         except Exception as error:
             message = f"Failed to update user {user_id}. Error: {error}"
+            logging.error(message)
+            raise FailToPersist(message)
+
+    @classmethod
+    async def register_password(cls, user_id: str, password_hash: bytes) -> bool:
+        try:
+            check_query = "SELECT id FROM passwords WHERE user_id = $1"
+            existing = await cls.execute_query(check_query, [user_id])
+
+            if existing:
+                command = "UPDATE passwords SET password_hash = $2 WHERE user_id = $1"
+            else:
+                command = "INSERT INTO passwords (user_id, password_hash) VALUES ($1, $2)"
+
+            result = await cls.execute_command(command, [user_id, password_hash])
+
+            if result != "SUCCESS":
+                message = f"Failed to register password for user {user_id}"
+                logging.error(message)
+                return False
+            return True
+
+        except Exception as error:
+            message = f"Failed to register password for user {user_id}. Error: {error}"
             logging.error(message)
             raise FailToPersist(message)
 

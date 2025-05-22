@@ -11,9 +11,8 @@ from src.domain.exceptions.router import (
     NotFoundError,
     EntityNotFound, Unauthorized,
 )
-from src.domain.exceptions.service import CouldNotValidateCredentials
+from src.domain.exceptions.service import CouldNotValidateCredentials, EmailAlreadyInUse
 from src.router.auth import AuthRouter
-
 from src.router.user import UserRouter
 
 
@@ -87,7 +86,15 @@ class BaseRouter:
                      "detail": "Could not validate credentials"}
                 ),
             )
-
+        except EmailAlreadyInUse as err:
+            logging.error(f"{err}")
+            return Response(
+                status_code=status.HTTP_409_CONFLICT,
+                content=json.dumps(
+                    {"success": False,
+                     "detail": "Email already in use"}
+                ),
+            )
         except EnvironmentException as err:
             logging.error(f"ENVIRONMENT ERROR!!! ->{err}")
             raise err

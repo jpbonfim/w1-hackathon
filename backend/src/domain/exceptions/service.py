@@ -15,3 +15,6 @@ class Unauthorized(Exception):
 
 class CouldNotValidateCredentials(Exception):
     pass
+
+class EmailAlreadyInUse(Exception):
+    pass

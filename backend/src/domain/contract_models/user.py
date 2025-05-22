@@ -1,8 +1,7 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, constr
+from pydantic import BaseModel, EmailStr, Field
 
-from src.domain.entities.address import Address
 from src.domain.entities.user import User
 
 
@@ -33,3 +32,9 @@ class GetUserRequest(BaseModel):
 class GetUserResponse(BaseModel):
     success: bool
     user: User
+
+
+class MeResponse(BaseModel):
+    success: bool
+    user_data: User
+

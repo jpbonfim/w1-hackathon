@@ -4,7 +4,6 @@ from typing import Optional
 
 import bcrypt
 import jwt
-from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
 from src.domain.contract_models.auth import TokenData
@@ -18,7 +17,6 @@ class AuthService:
     __SECRET_KEY = get_config("AUTH_KEY")
     __ALGORITHM = "HS256"
     __ACCESS_TOKEN_EXPIRE_MINUTES = int(get_config("AUTH_TOKEN_EXPIRE_MINUTES"))
-    # __pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     __oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 
     @classmethod
@@ -44,9 +42,9 @@ class AuthService:
     @classmethod
     async def authenticate_user(cls, username: str, password: str) -> Optional[User]:
         user = await UserRepository.get_user_by_email(username)
-        correct_password = await cls.verify_password(password, user.password)
         if not user:
             return None
+        correct_password = await cls.verify_password(username, password)
         if not correct_password:
             return None
         return user
@@ -63,24 +61,16 @@ class AuthService:
         return encoded_jwt
 
     @classmethod
-    async def get_current_user(cls, token: str = Depends(__oauth2_scheme)) -> User:
+    def validate_token(cls, token: str) -> TokenData:
         try:
             payload = jwt.decode(token, cls.__SECRET_KEY, algorithms=[cls.__ALGORITHM])
-            user_id: str = payload.get("sub")
+            user_id = payload.get("user_id")
             if user_id is None:
                 raise CouldNotValidateCredentials()
             token_data = TokenData(user_id=user_id)
+            return token_data
 
         except Exception as error:
             message = f"Failed to decode token. Error: {error}"
             logging.error(message)
             raise CouldNotValidateCredentials()
-
-        user = await UserRepository.get_user(token_data.user_id)
-        return user
-
-    @classmethod
-    async def get_current_active_user(cls, current_user: User = Depends(get_current_user)) -> User:
-        if current_user.disabled:
-            raise HTTPException(status_code=400, detail="Inactive user")
-        return current_user
