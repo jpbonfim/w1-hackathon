@@ -15,7 +15,6 @@ class UpdateUserRequest(BaseModel):
 class CreateUserRequest(BaseModel):
     name: str = Field(examples=["João Silva"])
     email: EmailStr = Field(examples=["joao@example.com"])
-    nickname: str
     cpf: str = Field(examples=["123.456.789-00"])
     # phone: str = Field(examples=["(11) 91234-5678"])
     # birth_date: str = Field(examples=["1990-05-15"])
@@ -30,7 +29,6 @@ class CreateUserResponse(BaseModel):
 
 class GetUserRequest(BaseModel):
     user_id: str
-
 
 class GetUserResponse(BaseModel):
     success: bool

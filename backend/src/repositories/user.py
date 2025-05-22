@@ -1,9 +1,7 @@
 import logging
-from typing import Dict, Any, Optional
 
 from src.domain.entities.user import User
 from src.domain.exceptions.repository import DataNotFound, FailToPersist
-from src.infrastructures import get_config
 from src.infrastructures.postgresql import PostgreSQLInfrastructure
 
 
@@ -13,8 +11,8 @@ class UserRepository(PostgreSQLInfrastructure):
         return await cls._get_user_by_query("user_id", user_id)
 
     @classmethod
-    async def get_user_by_cpf(cls, cpf: str) -> User:
-        return await cls._get_user_by_query("cpf", cpf)
+    async def get_user_by_email(cls, email: str) -> User:
+        return await cls._get_user_by_query("email", email)
 
     @classmethod
     async def _get_user_by_query(cls, field: str, value: str) -> User:
@@ -42,7 +40,7 @@ class UserRepository(PostgreSQLInfrastructure):
             command = f"INSERT INTO users ({fields}) VALUES ({placeholders})"
             await cls.execute_command(command, values)
         except Exception as error:
-            message = f"Failed to create user CPF: {user.cpf}. Error: {error}"
+            message = f"Failed to create user email: {user.email}. Error: {error}"
             logging.error(message)
             raise FailToPersist(message)
 
@@ -64,3 +62,17 @@ class UserRepository(PostgreSQLInfrastructure):
             message = f"Failed to update user {user_id}. Error: {error}"
             logging.error(message)
             raise FailToPersist(message)
+
+    @classmethod
+    async def get_password_by_email(cls, email: str) -> bytes:
+        try:
+            user = await cls._get_user_by_query("email", email)
+            query = "SELECT password_hash FROM passwords WHERE user_id = $1"
+            results = await cls.execute_query(query, [user.user_id])
+            if not results:
+                raise DataNotFound("Password not found for user")
+            return results[0]['password_hash']
+        except Exception as error:
+            message = f"Failed to get password for user with email: {email}. Error: {error}"
+            logging.error(message)
+            raise

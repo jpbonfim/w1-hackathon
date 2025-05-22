@@ -6,7 +6,7 @@ from src.domain.exceptions.infrastructure import EnvironmentException
 db_password = os.getenv("DB_PASSWORD")
 
 
-def get_config(key: str):
+def get_config(key: str) -> str:
     try:
         value = os.getenv(key)
         if value is None:
