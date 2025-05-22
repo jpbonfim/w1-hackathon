@@ -6,6 +6,8 @@ from src.domain.entities.user import User
 
 
 class RegisterRequest(BaseModel):
+    name: str = Field(examples=["João Silva"])
+    username: str = Field(examples=["joaosilva"])
     email: EmailStr = Field(examples=["joao@example.com"])
     password: constr(min_length=6) = Field(examples=["strongpassword123"])
 

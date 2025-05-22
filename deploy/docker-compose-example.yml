@@ -24,6 +24,8 @@ services:
     environment:
       POSTGRES_CONNECTION_URL: "postgresql://username:password@postgres:5432/hackathon-w1"
       W1_BACKEND_PORT: "9000"
+      AUTH_KEY: "123"
+      AUTH_TOKEN_EXPIRE_MINUTES: 60
 
 volumes:
   postgres_data:

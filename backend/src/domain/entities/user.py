@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, ValidationError
 
@@ -16,6 +16,6 @@ class User(BaseModel):
 
     user_id: str
     name: str
-    nickname: str
+    username: str
     email: str
-    cpf: str
+    # cpf: Optional[str]
