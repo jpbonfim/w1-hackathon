@@ -1,36 +1,26 @@
+import os
 import logging
-from typing import Annotated
+from openai import OpenAI
+from dotenv import load_dotenv
 
-from fastapi import APIRouter, Header
+load_dotenv()
 
-from src.domain.contract_models.chatgpt import ChatRequest, ChatResponse
-from src.services.auth import AuthService
-from src.services.chatgpt import ChatGPTService
-
-
-class ChatGPTRouter:
-    __router = APIRouter(prefix="/chatgpt", tags=["ChatGPT Assistant"])
+class ChatGPTService:
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     @staticmethod
-    def get_routes():
-        return ChatGPTRouter.__router
-
-    @staticmethod
-    @__router.post("/ask", response_model=ChatResponse)
-    async def ask_gpt(
-        auth: Annotated[str, Header()],
-        request: ChatRequest
-    ):
+    def ask(message: str) -> str:
         try:
-            # Valida o token e extrai o user_id (mesmo que não seja usado agora, prepara pro futuro)
-            token_data = AuthService.validate_token(auth)
-            user_id = token_data.user_id
+            response = ChatGPTService.client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "Você é um atendente de suporte simpático e prestativo."},
+                    {"role": "user", "content": message}
+                ]
+            )
 
-            # Chama o serviço do ChatGPT
-            reply = ChatGPTService.ask(message=request.message)
-
-            return ChatResponse(success=True, reply=reply)
+            return response.choices[0].message.content
 
         except Exception as e:
-            logging.error("Erro ao processar pergunta no ChatGPT: %s", str(e))
-            raise
+            logging.error("Erro ao consultar o ChatGPT: %s", str(e))
+            raise Exception("Erro ao consultar o ChatGPT: \n" + str(e))
