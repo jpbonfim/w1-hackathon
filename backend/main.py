@@ -1,9 +1,17 @@
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.router.base import BaseRouter
 from src.infrastructures import get_config
 
 app = BaseRouter.register_routers()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run(
