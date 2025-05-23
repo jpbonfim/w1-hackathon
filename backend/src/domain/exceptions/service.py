@@ -13,8 +13,10 @@ class EntityNotFound(Exception):
 class Unauthorized(Exception):
     pass
 
+
 class CouldNotValidateCredentials(Exception):
     pass
+
 
 class EmailAlreadyInUse(Exception):
     pass

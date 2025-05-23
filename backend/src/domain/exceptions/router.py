@@ -12,4 +12,3 @@ class EntityNotFound(Exception):
 
 class Unauthorized(Exception):
     pass
-

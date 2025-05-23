@@ -13,7 +13,7 @@ class UserService:
         return user
 
     @classmethod
-    async def create_user(cls, user_data: dict):
+    async def create_user(cls, user_data: dict) -> str:
         user_id = str(uuid4())
         user = User(user_id=user_id, **user_data)
         try:
@@ -23,5 +23,6 @@ class UserService:
         return user_id
 
     @classmethod
-    async def update_user(cls, user_id: str, update_data: dict):
-        pass
+    async def update_user(cls, user_id: str, update_data: dict) -> bool:
+        await UserRepository.update_user(user_id, update_data)
+        return True

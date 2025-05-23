@@ -52,7 +52,9 @@ class UserRepository(PostgreSQLInfrastructure):
     @classmethod
     async def update_user(cls, user_id: str, update_data: dict) -> None:
         try:
-            set_clause = ", ".join(f"{key} = ${i + 2}" for i, key in enumerate(update_data.keys()))
+            set_clause = ", ".join(
+                f"{key} = ${i + 2}" for i, key in enumerate(update_data.keys())
+            )
             values = list(update_data.values())
             values.insert(0, user_id)
 
@@ -63,6 +65,7 @@ class UserRepository(PostgreSQLInfrastructure):
                 message = f"Failed to update user {user_id}."
                 logging.error(message)
                 raise FailToPersist(message)
+
         except Exception as error:
             message = f"Failed to update user {user_id}. Error: {error}"
             logging.error(message)
@@ -77,7 +80,9 @@ class UserRepository(PostgreSQLInfrastructure):
             if existing:
                 command = "UPDATE passwords SET password_hash = $2 WHERE user_id = $1"
             else:
-                command = "INSERT INTO passwords (user_id, password_hash) VALUES ($1, $2)"
+                command = (
+                    "INSERT INTO passwords (user_id, password_hash) VALUES ($1, $2)"
+                )
 
             result = await cls.execute_command(command, [user_id, password_hash])
 
@@ -100,8 +105,10 @@ class UserRepository(PostgreSQLInfrastructure):
             results = await cls.execute_query(query, [user.user_id])
             if not results:
                 raise DataNotFound("Password not found for user")
-            return results[0]['password_hash']
+            return results[0]["password_hash"]
         except Exception as error:
-            message = f"Failed to get password for user with email: {email}. Error: {error}"
+            message = (
+                f"Failed to get password for user with email: {email}. Error: {error}"
+            )
             logging.error(message)
             raise

@@ -1,6 +1,11 @@
 from fastapi import APIRouter
 
-from src.domain.contract_models.auth import RegisterResponse, RegisterRequest, LoginRequest, LoginResponse
+from src.domain.contract_models.auth import (
+    RegisterResponse,
+    RegisterRequest,
+    LoginRequest,
+    LoginResponse,
+)
 from src.domain.exceptions.router import Unauthorized
 from src.repositories.user import UserRepository
 from src.services.auth import AuthService
@@ -26,21 +31,18 @@ class AuthRouter:
 
         return RegisterResponse(success=True, user_id=user_id)
 
-
     @staticmethod
     @__router.post("/login", response_model=LoginResponse)
     async def login_for_access_token(request: LoginRequest):
         user = await AuthService.authenticate_user(request.email, request.password)
         if not user:
             raise Unauthorized()
-        
-        access_token = AuthService.create_access_token(
-            data={"user_id": user.user_id}
-        )
-        
+
+        access_token = AuthService.create_access_token(data={"user_id": user.user_id})
+
         return LoginResponse(
             success=True,
             user_id=user.user_id,
             access_token=access_token,
-            token_type="bearer"
+            token_type="bearer",
         )

@@ -31,7 +31,6 @@ class AuthService:
             return True
         return False
 
-
     @classmethod
     def get_password_hash(cls, password: str) -> bytes:
         password_bytes = bytes(password, "utf-8")
@@ -50,12 +49,16 @@ class AuthService:
         return user
 
     @classmethod
-    def create_access_token(cls, data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    def create_access_token(
+        cls, data: dict, expires_delta: Optional[timedelta] = None
+    ) -> str:
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.now(UTC) + expires_delta
         else:
-            expire = datetime.now(UTC) + timedelta(minutes=cls.__ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.now(UTC) + timedelta(
+                minutes=cls.__ACCESS_TOKEN_EXPIRE_MINUTES
+            )
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, cls.__SECRET_KEY, algorithm=cls.__ALGORITHM)
         return encoded_jwt

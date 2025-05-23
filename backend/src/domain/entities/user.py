@@ -18,4 +18,4 @@ class User(BaseModel):
     name: str
     username: str
     email: str
-    # cpf: Optional[str]
+    cpf: Optional[str] = None

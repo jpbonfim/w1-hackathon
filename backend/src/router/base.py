@@ -9,11 +9,13 @@ from src.domain.exceptions.infrastructure import EnvironmentException
 from src.domain.exceptions.router import (
     BadRequestError,
     NotFoundError,
-    EntityNotFound, Unauthorized,
+    EntityNotFound,
+    Unauthorized,
 )
 from src.domain.exceptions.service import CouldNotValidateCredentials, EmailAlreadyInUse
 from src.router.auth import AuthRouter
-from src.router.user import UserRouter
+from src.router.patrimony import PatrimonyRouter
+from src.router.user import AccountRouter
 
 
 class BaseRouter:
@@ -24,10 +26,12 @@ class BaseRouter:
 
     @staticmethod
     def register_routers():
-        user_router = UserRouter.get_routes()
+        user_router = AccountRouter.get_routes()
         auth_router = AuthRouter.get_routes()
+        patrimony_router = PatrimonyRouter.get_routes()
         BaseRouter.app.include_router(user_router)
         BaseRouter.app.include_router(auth_router)
+        BaseRouter.app.include_router(patrimony_router)
         return BaseRouter.app
 
     @staticmethod
@@ -44,27 +48,21 @@ class BaseRouter:
             logging.error(f"{err}")
             return Response(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                content=json.dumps(
-                    {"success": False}
-                ),
+                content=json.dumps({"success": False}),
             )
 
         except NotFoundError as err:
             logging.error(f"{err}")
             return Response(
                 status_code=status.HTTP_404_NOT_FOUND,
-                content=json.dumps(
-                    {"success": False}
-                ),
+                content=json.dumps({"success": False}),
             )
 
         except EntityNotFound as err:
             logging.error(f"{err}")
             return Response(
                 status_code=status.HTTP_404_NOT_FOUND,
-                content=json.dumps(
-                    {"success": False}
-                ),
+                content=json.dumps({"success": False}),
             )
 
         except Unauthorized as err:
@@ -72,8 +70,7 @@ class BaseRouter:
             return Response(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content=json.dumps(
-                    {"success": False,
-                     "detail": "Incorrect username or password"}
+                    {"success": False, "detail": "Incorrect username or password"}
                 ),
             )
 
@@ -82,8 +79,7 @@ class BaseRouter:
             return Response(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content=json.dumps(
-                    {"success": False,
-                     "detail": "Could not validate credentials"}
+                    {"success": False, "detail": "Could not validate credentials"}
                 ),
             )
         except EmailAlreadyInUse as err:
@@ -91,8 +87,7 @@ class BaseRouter:
             return Response(
                 status_code=status.HTTP_409_CONFLICT,
                 content=json.dumps(
-                    {"success": False,
-                     "detail": "Email already in use"}
+                    {"success": False, "detail": "Email already in use"}
                 ),
             )
         except EnvironmentException as err:
@@ -103,7 +98,5 @@ class BaseRouter:
             logging.error(f"{err}")
             return Response(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content=json.dumps(
-                    {"success": False}
-                ),
+                content=json.dumps({"success": False}),
             )
