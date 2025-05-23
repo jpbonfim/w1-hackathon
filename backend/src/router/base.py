@@ -13,12 +13,15 @@ from src.domain.exceptions.router import (
     Unauthorized,
 )
 from src.domain.exceptions.service import CouldNotValidateCredentials, EmailAlreadyInUse
+
 from src.router.auth import AuthRouter
 from src.router.patrimony import PatrimonyRouter
 from src.router.user import AccountRouter
+from src.router.chatgpt import chatgpt_router
 
 
 class BaseRouter:
+    # Inicializa o app FastAPI
     app = FastAPI(
         title="W1 Hackathon Backend API",
         description="Documentation for the project's backend API.",
@@ -26,17 +29,29 @@ class BaseRouter:
 
     @staticmethod
     def register_routers():
+        """
+        Registra todas as rotas da aplicação.
+        """
         user_router = AccountRouter.get_routes()
         auth_router = AuthRouter.get_routes()
         patrimony_router = PatrimonyRouter.get_routes()
+
         BaseRouter.app.include_router(user_router)
         BaseRouter.app.include_router(auth_router)
         BaseRouter.app.include_router(patrimony_router)
+
+        # Rota do ChatGPT
+        BaseRouter.app.include_router(chatgpt_router)
+
         return BaseRouter.app
 
     @staticmethod
     @app.middleware("http")
     async def middleware_response(request: Request, call_next):
+        """
+        Middleware para medir o tempo de execução da requisição
+        e tratar exceções personalizadas.
+        """
         try:
             start_time = time.perf_counter()
             response = await call_next(request)
@@ -46,57 +61,51 @@ class BaseRouter:
 
         except BadRequestError as err:
             logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                content=json.dumps({"success": False}),
-            )
+            return _error_response(status.HTTP_400_BAD_REQUEST)
 
-        except NotFoundError as err:
+        except (NotFoundError, EntityNotFound) as err:
             logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_404_NOT_FOUND,
-                content=json.dumps({"success": False}),
-            )
-
-        except EntityNotFound as err:
-            logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_404_NOT_FOUND,
-                content=json.dumps({"success": False}),
-            )
+            return _error_response(status.HTTP_404_NOT_FOUND)
 
         except Unauthorized as err:
             logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                content=json.dumps(
-                    {"success": False, "detail": "Incorrect username or password"}
-                ),
+            return _error_response(
+                status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password"
             )
 
         except CouldNotValidateCredentials as err:
             logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                content=json.dumps(
-                    {"success": False, "detail": "Could not validate credentials"}
-                ),
+            return _error_response(
+                status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials"
             )
+
         except EmailAlreadyInUse as err:
             logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_409_CONFLICT,
-                content=json.dumps(
-                    {"success": False, "detail": "Email already in use"}
-                ),
+            return _error_response(
+                status.HTTP_409_CONFLICT,
+                detail="Email already in use"
             )
+
         except EnvironmentException as err:
-            logging.error(f"ENVIRONMENT ERROR!!! ->{err}")
-            raise err
+            logging.critical(f"ENVIRONMENT ERROR!!! -> {err}")
+            raise err  # Nesse caso, propaga o erro (parar aplicação)
 
         except Exception as err:
             logging.error(f"{err}")
-            return Response(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content=json.dumps({"success": False}),
-            )
+            return _error_response(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def _error_response(status_code: int, detail: str = "An error occurred"):
+    """
+    Função auxiliar para padronizar resposta de erro.
+    """
+    return Response(
+        status_code=status_code,
+        content=json.dumps({
+            "success": False,
+            "detail": detail
+        }),
+        media_type="application/json"
+    )
