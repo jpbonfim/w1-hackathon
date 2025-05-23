@@ -17,7 +17,7 @@ from src.domain.exceptions.service import CouldNotValidateCredentials, EmailAlre
 from src.router.auth import AuthRouter
 from src.router.patrimony import PatrimonyRouter
 from src.router.user import AccountRouter
-from src.router.chatgpt import chatgpt_router
+from src.router.chatgpt import ChatGPTRouter
 
 
 class BaseRouter:
@@ -35,13 +35,12 @@ class BaseRouter:
         user_router = AccountRouter.get_routes()
         auth_router = AuthRouter.get_routes()
         patrimony_router = PatrimonyRouter.get_routes()
+        gpt_router = ChatGPTRouter.get_routes()
 
         BaseRouter.app.include_router(user_router)
         BaseRouter.app.include_router(auth_router)
         BaseRouter.app.include_router(patrimony_router)
-
-        # Rota do ChatGPT
-        BaseRouter.app.include_router(chatgpt_router)
+        BaseRouter.app.include_router(gpt_router)
 
         return BaseRouter.app
 
