@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -19,3 +19,11 @@ class UpdatePatrimonyRequest(BaseModel):
 class UpdatePatrimonyResponse(BaseModel):
     success: bool
     patrimony: Patrimony
+
+class Evolution(BaseModel):
+    month: str
+    value: float
+class EvolutionResponse(BaseModel):
+    success: bool
+    evolution: List[Evolution]
+

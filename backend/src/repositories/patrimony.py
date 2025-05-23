@@ -77,3 +77,53 @@ class PatrimonyRepository(PostgreSQLInfrastructure):
             message = f"Failed to delete patrimony for user {user_id}. Error: {error}"
             logging.error(message)
             raise FailToPersist(message)
+
+    @classmethod
+    async def get_patrimony_history(cls, user_id: str) -> list[dict]:
+        try:
+            query = """
+                SELECT month, patrimony 
+                FROM patrimony_history 
+                WHERE user_id = $1
+                ORDER BY created_at ASC
+            """
+            results = await cls.execute_query(query, [user_id])
+
+            history = []
+            for row in results:
+                history.append({
+                    "month": row["month"],
+                    "value": float(row["patrimony"])
+                })
+
+            return history
+
+        except Exception as error:
+            message = f"Failed to get patrimony history for user {user_id}. Error: {error}"
+            logging.error(message)
+            raise
+
+    @classmethod
+    async def get_economy_history(cls, user_id: str) -> list[dict]:
+        try:
+            query = """
+                SELECT month, economy 
+                FROM economy_history 
+                WHERE user_id = $1
+                ORDER BY created_at ASC
+            """
+            results = await cls.execute_query(query, [user_id])
+
+            history = []
+            for row in results:
+                history.append({
+                    "month": row["month"],
+                    "value": float(row["economy"])
+                })
+
+            return history
+
+        except Exception as error:
+            message = f"Failed to get patrimony history for user {user_id}. Error: {error}"
+            logging.error(message)
+            raise

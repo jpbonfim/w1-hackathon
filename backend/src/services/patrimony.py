@@ -71,3 +71,32 @@ class PatrimonyService:
             raise EntityNotFound(message)
 
         return patrimony
+
+    @classmethod
+    async def get_user_patrimony_history(cls, user_id: str) -> list[dict]:
+        history = await PatrimonyRepository.get_patrimony_history(user_id)
+
+        if not history:
+            patrimony = await cls.get_patrimony(user_id)
+            values = patrimony.model_dump()
+            values.pop("id")
+            values.pop("user_id")
+            values.pop("created_at")
+            values.pop("updated_at")
+            total_patrimony = 0
+
+            for key, value in values.items():
+                total_patrimony += value
+
+            return [{"month": "Mai", "value": total_patrimony}]
+
+        return history
+
+    @classmethod
+    async def get_user_economy_history(cls, user_id: str) -> list[dict]:
+        history = await PatrimonyRepository.get_economy_history(user_id)
+
+        if not history:
+            return [{"month": "Mai", "value": 0}]
+
+        return history

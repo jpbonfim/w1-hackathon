@@ -7,7 +7,7 @@ from fastapi import Header
 from src.domain.contract_models.patrimony import (
     GetPatrimonyResponse,
     UpdatePatrimonyResponse,
-    UpdatePatrimonyRequest,
+    UpdatePatrimonyRequest, EvolutionResponse,
 )
 from src.domain.entities.patrymony import Patrimony
 from src.domain.exceptions.service import EntityNotFound
@@ -77,3 +77,19 @@ class PatrimonyRouter:
         except Exception as e:
             logging.error("Failed to update patrimony: %s", str(e))
             raise
+
+    @staticmethod
+    @__patrimony_router.get("/patrimony-history", response_model=EvolutionResponse)
+    async def get_patrimony_history(auth: Annotated[str, Header()]):
+        token_data = AuthService.validate_token(auth)
+        history = await PatrimonyService.get_user_patrimony_history(user_id=token_data.user_id)
+        response = EvolutionResponse(success=True, evolution=history)
+        return response
+
+    @staticmethod
+    @__patrimony_router.get("/economy-history", response_model=EvolutionResponse)
+    async def get_economy_history(auth: Annotated[str, Header()]):
+        token_data = AuthService.validate_token(auth)
+        history = await PatrimonyService.get_user_economy_history(user_id=token_data.user_id)
+        response = EvolutionResponse(success=True, evolution=history)
+        return response
