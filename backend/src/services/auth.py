@@ -8,6 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from src.domain.contract_models.auth import TokenData
 from src.domain.entities.user import User
+from src.domain.exceptions.repository import DataNotFound
 from src.domain.exceptions.service import CouldNotValidateCredentials
 from src.infrastructures import get_config
 from src.repositories.user import UserRepository
@@ -40,7 +41,10 @@ class AuthService:
 
     @classmethod
     async def authenticate_user(cls, username: str, password: str) -> Optional[User]:
-        user = await UserRepository.get_user_by_email(username)
+        try:
+            user = await UserRepository.get_user_by_email(username)
+        except DataNotFound:
+            user = None
         if not user:
             return None
         correct_password = await cls.verify_password(username, password)
