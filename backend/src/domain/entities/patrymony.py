@@ -20,14 +20,10 @@ class Patrimony(BaseModel):
     #         raise ValueError("Value must have at most 2 decimal places")
     #     return value
 
-
-class PatrimonyCreate(Patrimony):
-    user_id: str
-
-
-class PatrimonyUpdate(Patrimony):
-    pass
-
+class Holding(BaseModel):
+    status: str = Field(default="NO_HOLDING")
+    tax_with: Decimal = Field(default=0, ge=0)
+    tax_without: Decimal = Field(default=0, ge=0)
 
 class PatrimonyInDB(Patrimony):
     id: int
@@ -37,8 +33,3 @@ class PatrimonyInDB(Patrimony):
 
     class Config:
         from_attributes = True
-
-
-class PatrimonyResponse(BaseModel):
-    success: bool
-    patrimony: Optional[PatrimonyInDB] = None

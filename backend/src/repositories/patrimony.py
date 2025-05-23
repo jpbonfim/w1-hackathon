@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from typing import Optional
 
-from src.domain.entities.patrymony import PatrimonyInDB
+from src.domain.entities.patrymony import PatrimonyInDB, Holding
 from src.domain.exceptions.repository import DataNotFound, FailToPersist
 from src.infrastructures.postgresql import PostgreSQLInfrastructure
 
@@ -125,5 +125,31 @@ class PatrimonyRepository(PostgreSQLInfrastructure):
 
         except Exception as error:
             message = f"Failed to get patrimony history for user {user_id}. Error: {error}"
+            logging.error(message)
+            raise
+
+    @classmethod
+    async def get_user_holding(cls, user_id: str) -> Holding:
+        try:
+            query = """
+                SELECT status, tax_with, tax_without
+                FROM holdings
+                WHERE user_id = $1
+            """
+            results = await cls.execute_query(query, [user_id])
+
+            if not results:
+                results = [{"status": "NO_HOLDING", "tax_with": Decimal(0), "tax_without": Decimal(0)}]
+
+            holding_data = {
+                "status": results[0]["status"],
+                "tax_with": float(results[0]["tax_with"]),
+                "tax_without": float(results[0]["tax_without"])
+            }
+
+            return Holding(**holding_data)
+
+        except Exception as error:
+            message = f"Failed to get holding for user {user_id}. Error: {error}"
             logging.error(message)
             raise

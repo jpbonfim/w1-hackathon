@@ -1,14 +1,11 @@
 import logging
 from decimal import Decimal
-from typing import Optional, Dict, Any
 
 from src.domain.entities.patrymony import (
     PatrimonyInDB,
-    PatrimonyCreate,
-    PatrimonyUpdate,
-    Patrimony,
+    Patrimony, Holding,
 )
-from src.domain.exceptions.repository import DataNotFound, FailToPersist
+from src.domain.exceptions.repository import FailToPersist
 from src.domain.exceptions.service import EntityNotFound
 from src.repositories.patrimony import PatrimonyRepository
 
@@ -100,3 +97,26 @@ class PatrimonyService:
             return [{"month": "Mai", "value": 0}]
 
         return history
+
+    @classmethod
+    async def get_user_holding(cls, user_id: str) -> Holding:
+        holding = await PatrimonyRepository.get_user_holding(user_id)
+
+        if holding.status == "NO_HOLDING":
+            patrimony = await cls.get_patrimony(user_id)
+            values = patrimony.model_dump()
+            values.pop("id")
+            values.pop("user_id")
+            values.pop("created_at")
+            values.pop("updated_at")
+            total_patrimony = 0
+
+            for key, value in values.items():
+                total_patrimony += value
+            tax_with = total_patrimony * Decimal(0.15)
+            tax_without = total_patrimony * Decimal(0.2)
+
+            holding.tax_with = Decimal(f"{tax_with:.2f}")
+            holding.tax_without =  Decimal(f"{tax_without:.2f}")
+
+        return holding

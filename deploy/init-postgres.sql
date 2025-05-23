@@ -73,6 +73,21 @@ CREATE TABLE economy_history (
 
 -- Index for faster lookups by user_id
 CREATE INDEX idx_patrimony_history_user_id ON patrimony_history(user_id);
+CREATE INDEX idx_economy_history_user_id ON economy_history(user_id);
+
+
+-- Create holding table with user foreign key
+CREATE TABLE IF NOT EXISTS holdings (
+    id SERIAL PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    status VARCHAR(20),
+    tax_with DECIMAL(15, 2) DEFAULT 0,
+    tax_without DECIMAL(15, 2) DEFAULT 0,
+    UNIQUE(user_id)
+);
+-- Index for faster lookups by user_id
+CREATE INDEX idx_holdings_user_id ON holdings(user_id);
+
 
 -- Add initial data
 INSERT INTO users (user_id, name, username, email, cpf) VALUES
@@ -85,6 +100,10 @@ INSERT INTO passwords (user_id, password_hash) VALUES
 -- Add initial patrimony for initial user
 INSERT INTO patrimony (user_id, stocks, real_estate_funds, investment_funds, fixed_income, companies, real_estate, others) VALUES
     ('fc9dfa83-4a94-4090-a8ce-3110799bf690', 10000.00, 5000.00, 7500.00, 25000.00, 0.00, 120000.00, 1000.00);
+
+-- Add holding patrimony for initial user
+INSERT INTO holdings (user_id, status, tax_with, tax_without) VALUES
+    ('fc9dfa83-4a94-4090-a8ce-3110799bf690', 'Operando', 5000.00, 7500.00);
 
 -- Add one year of patrimony history records for initial user
 INSERT INTO patrimony_history (user_id, month, patrimony) VALUES

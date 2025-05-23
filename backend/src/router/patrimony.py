@@ -7,7 +7,7 @@ from fastapi import Header
 from src.domain.contract_models.patrimony import (
     GetPatrimonyResponse,
     UpdatePatrimonyResponse,
-    UpdatePatrimonyRequest, EvolutionResponse,
+    UpdatePatrimonyRequest, EvolutionResponse, HoldingResponse,
 )
 from src.domain.entities.patrymony import Patrimony
 from src.domain.exceptions.service import EntityNotFound
@@ -93,3 +93,12 @@ class PatrimonyRouter:
         history = await PatrimonyService.get_user_economy_history(user_id=token_data.user_id)
         response = EvolutionResponse(success=True, evolution=history)
         return response
+
+    @staticmethod
+    @__patrimony_router.get("/get-holding", response_model=HoldingResponse)
+    async def get_user_holding(auth: Annotated[str, Header()]):
+        token_data = AuthService.validate_token(auth)
+        holding = await PatrimonyService.get_user_holding(user_id=token_data.user_id)
+        response = HoldingResponse(success=True, holding=holding)
+        return response
+

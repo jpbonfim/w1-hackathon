@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr, Field
 
-from src.domain.entities.patrymony import Patrimony
+from src.domain.entities.patrymony import Patrimony, Holding
 from src.domain.entities.user import User
 
 
@@ -23,7 +23,11 @@ class UpdatePatrimonyResponse(BaseModel):
 class Evolution(BaseModel):
     month: str
     value: float
+
 class EvolutionResponse(BaseModel):
     success: bool
     evolution: List[Evolution]
 
+class HoldingResponse(BaseModel):
+    success: bool
+    holding: Holding
