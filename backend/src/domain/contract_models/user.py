@@ -6,10 +6,10 @@ from src.domain.entities.user import User
 
 
 class UpdateUserRequest(BaseModel):
-    name: str = Field(examples=["João Silva"])
-    username: str = Field(examples=["joaosilva"])
-    email: EmailStr = Field(examples=["joao@example.com"])
-    cpf: str = Field(examples=["123.456.789-00"])
+    name: Optional[str] = Field(default=None, examples=["João Silva"])
+    username: Optional[str] = Field(default=None, examples=["joaosilva"])
+    email: Optional[EmailStr] = Field(default=None, examples=["joao@example.com"])
+    cpf: Optional[str] = Field(default=None, examples=["123.456.789-00"])
 
 
 class UpdateUserResponse(BaseModel):

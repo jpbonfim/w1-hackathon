@@ -6,6 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     cpf VARCHAR(14)
 );
 
+-- Add profile_image column to users table
+ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image TEXT;
+
 -- Create indexes for frequently queried fields
 CREATE INDEX IF NOT EXISTS idx_users_cpf ON users(cpf);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);

@@ -59,7 +59,8 @@ class AccountRouter:
     )
     async def update_user(auth: Annotated[str, Header()], request: UpdateUserRequest):
         token_data = AuthService.validate_token(auth)
-        user_data = request.model_dump()
-        await UserService.update_user(user_id=token_data.user_id, update_data=user_data)
+        user_data = {k: v for k, v in request.model_dump().items() if v is not None}
+        if user_data:
+            await UserService.update_user(user_id=token_data.user_id, update_data=user_data)
         response = UpdateUserResponse(success=True)
         return response

@@ -19,3 +19,4 @@ class User(BaseModel):
     username: str
     email: str
     cpf: Optional[str] = None
+    profile_image: Optional[str] = None
