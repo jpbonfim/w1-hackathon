@@ -10,6 +10,7 @@ class UpdateUserRequest(BaseModel):
     username: Optional[str] = Field(default=None, examples=["joaosilva"])
     email: Optional[EmailStr] = Field(default=None, examples=["joao@example.com"])
     cpf: Optional[str] = Field(default=None, examples=["123.456.789-00"])
+    profile_image: Optional[str] = Field(default=None)
 
 
 class UpdateUserResponse(BaseModel):

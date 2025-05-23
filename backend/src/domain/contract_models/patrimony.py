@@ -12,7 +12,6 @@ class GetPatrimonyResponse(BaseModel):
 
 
 class UpdatePatrimonyRequest(BaseModel):
-    success: bool
     patrimony: Patrimony
 
 
