@@ -9,8 +9,14 @@ class ConnectionException(Exception):
 class QueryExecutionException(Exception):
     pass
 
+
 class CommandExecutionException(Exception):
     pass
+
+
+class RecordAlreadyExistsException(Exception):
+    pass
+
 
 class DatabaseStructureException(Exception):
     pass

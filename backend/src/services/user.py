@@ -1,6 +1,8 @@
 from uuid import uuid4
 
 from src.domain.entities.user import User
+from src.domain.exceptions.infrastructure import RecordAlreadyExistsException
+from src.domain.exceptions.service import EmailAlreadyInUse
 from src.repositories.user import UserRepository
 
 
@@ -11,12 +13,16 @@ class UserService:
         return user
 
     @classmethod
-    async def create_user(cls, user_data: dict):
+    async def create_user(cls, user_data: dict) -> str:
         user_id = str(uuid4())
         user = User(user_id=user_id, **user_data)
-        await UserRepository.create_user(user)
+        try:
+            await UserRepository.create_user(user)
+        except RecordAlreadyExistsException:
+            raise EmailAlreadyInUse()
         return user_id
 
     @classmethod
-    async def update_user(cls, user_id: str, update_data: dict):
-        pass
+    async def update_user(cls, user_id: str, update_data: dict) -> bool:
+        await UserRepository.update_user(user_id, update_data)
+        return True
