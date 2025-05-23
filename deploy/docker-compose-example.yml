@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hackathon-w1
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+
+  w1-backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: w1-backend
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_CONNECTION_URL: "postgresql://username:password@postgres:5432/hackathon-w1"
+      W1_BACKEND_PORT: "9000"
+      AUTH_KEY: "123"
+      AUTH_TOKEN_EXPIRE_MINUTES: 60
+
+volumes:
+  postgres_data:

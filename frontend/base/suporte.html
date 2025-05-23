@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suporte W1</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="logo">w1</div>
+      <nav class="menu">
+        <a href="#sobre">Sobre</a>
+        <a href="#suporte">Suporte</a>
+        <a href="/perfil.html" class="btn-entrar">Perfil</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="chat-container">
+    <button class="back-button">←</button>
+
+    <div class="chat-box" id="chat-box">
+      <!-- Mensagens do chat serão injetadas aqui via JS -->
+    </div>
+
+    <form id="chat-form" class="chat-form">
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Digite sua mensagem..."
+        required
+      />
+      <button type="submit" class="send-button">🛫</button>
+      <a href="https://wa.me/551130013007" class="whatsapp-button" target="_blank">
+        <img src="img/whatsapp.png" alt="WhatsApp" />
+      </a>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-left">
+        <h4>Conheça a W1</h4>
+        <ul>
+          <li><a href="#">W1 Consciência</a></li>
+          <li><a href="#">W1 Capital</a></li>
+          <li><a href="#">W1 Tecnologia</a></li>
+          <li><a href="#">W1 Consultoria Patrimonial</a></li>
+        </ul>
+      </div>
+      <div class="footer-right">
+        <h4>Contato:</h4>
+        <p>Endereço: R. Funchal, 418 – Conjunto 1701 – Vila Olímpia, São Paulo - SP, 04551-060</p>
+        <p>Telefone: <a href="tel:+551130013007">(11) 3001-3007</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("user-input");
+    const chatBox = document.getElementById("chat-box");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const userMsg = input.value.trim();
+      if (!userMsg) return;
+
+      // Exibe a mensagem do usuário
+      chatBox.innerHTML += `<div class="msg user">${userMsg}</div>`;
+      input.value = "";
+
+      // Chamada fictícia ao ChatGPT (trocar depois pela API real)
+      chatBox.innerHTML += `<div class="msg bot">Pensando...</div>`;
+
+      // Simula delay da API
+      setTimeout(() => {
+        chatBox.querySelector(".msg.bot:last-of-type").textContent = "Resposta gerada pelo bot (substituir pela API).";
+      }, 1200);
+    });
+  </script>
+</body>
+</html>

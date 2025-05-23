@@ -1,0 +1,2 @@
+class InconsistentUserData(Exception):
+    pass
