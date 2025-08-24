@@ -1,11 +1,11 @@
 # w1-hackathon
-Projeto desenvolvido para o hackathon organizado pela empresa W1 Holdings.
+Project developed for the hackathon organized by W1 Holdings.
 
-O app possui um usuário com alguns dados já salvos para teste:
+The app has a user with some data already saved for testing:
 
 ~~~
-usuário: rodrigo.lima@gmail.com
-senha: strongpassword123
+user: rodrigo.lima@gmail.com
+password: strongpassword123
 ~~~
 
 
